@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "GpqaU+tYEWZNP3u2MymW255/xwfKFH7VDyYg5aVy/a3xSKkia6iH36DQgmYuILnKc1K5lGOBkLLMqHP8pAJgGA==",
+  "dgSpecHash": "8bOYuN/5XhyHDrWfY5wemIkPC0qJYHcVbtoD46ueCNpy1haF3hqLjVAxLscLEi36PII3KtE+ET95p65egurpaQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\Victor L. Rodrigues\\source\\repos\\TodoListAPI\\TestProject\\TestProject.csproj",
   "expectedPackageFiles": [
@@ -19,6 +19,7 @@
     "C:\\Users\\Victor L. Rodrigues\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
     "C:\\Users\\Victor L. Rodrigues\\.nuget\\packages\\microsoft.testplatform.objectmodel\\17.1.0\\microsoft.testplatform.objectmodel.17.1.0.nupkg.sha512",
     "C:\\Users\\Victor L. Rodrigues\\.nuget\\packages\\microsoft.testplatform.testhost\\17.1.0\\microsoft.testplatform.testhost.17.1.0.nupkg.sha512",
+    "C:\\Users\\Victor L. Rodrigues\\.nuget\\packages\\microsoft.visualstudio.azure.containers.tools.targets\\1.15.1\\microsoft.visualstudio.azure.containers.tools.targets.1.15.1.nupkg.sha512",
     "C:\\Users\\Victor L. Rodrigues\\.nuget\\packages\\microsoft.win32.primitives\\4.3.0\\microsoft.win32.primitives.4.3.0.nupkg.sha512",
     "C:\\Users\\Victor L. Rodrigues\\.nuget\\packages\\microsoft.win32.registry\\5.0.0\\microsoft.win32.registry.5.0.0.nupkg.sha512",
     "C:\\Users\\Victor L. Rodrigues\\.nuget\\packages\\mongodb.bson\\2.29.0\\mongodb.bson.2.29.0.nupkg.sha512",

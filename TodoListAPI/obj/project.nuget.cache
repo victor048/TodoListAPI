@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "ooOeW+J25vL5ab1AxAbFfrNNDiyGlnO/k1Ivr9/5Uyg6wXiPUR4Fla7RFfYOGPnfDLqmhxCGhDJ0LVhxsCiffQ==",
+  "dgSpecHash": "xH5jN264+Sj0ZQnNx/Y2vqfj8IBvIOBkJdBlL4P7jUG9+X8ASduAoqZxOGGWOpZ9xrecKbIBvoedxAwy46z/8Q==",
   "success": true,
   "projectFilePath": "C:\\Users\\Victor L. Rodrigues\\source\\repos\\TodoListAPI\\TodoListAPI\\TodoListAPI.csproj",
   "expectedPackageFiles": [
@@ -11,6 +11,7 @@
     "C:\\Users\\Victor L. Rodrigues\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\2.0.0\\microsoft.extensions.logging.abstractions.2.0.0.nupkg.sha512",
     "C:\\Users\\Victor L. Rodrigues\\.nuget\\packages\\microsoft.netcore.platforms\\5.0.0\\microsoft.netcore.platforms.5.0.0.nupkg.sha512",
     "C:\\Users\\Victor L. Rodrigues\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
+    "C:\\Users\\Victor L. Rodrigues\\.nuget\\packages\\microsoft.visualstudio.azure.containers.tools.targets\\1.15.1\\microsoft.visualstudio.azure.containers.tools.targets.1.15.1.nupkg.sha512",
     "C:\\Users\\Victor L. Rodrigues\\.nuget\\packages\\microsoft.win32.registry\\5.0.0\\microsoft.win32.registry.5.0.0.nupkg.sha512",
     "C:\\Users\\Victor L. Rodrigues\\.nuget\\packages\\mongodb.bson\\2.29.0\\mongodb.bson.2.29.0.nupkg.sha512",
     "C:\\Users\\Victor L. Rodrigues\\.nuget\\packages\\mongodb.driver\\2.29.0\\mongodb.driver.2.29.0.nupkg.sha512",
