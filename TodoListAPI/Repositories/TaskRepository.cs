@@ -11,17 +11,29 @@ namespace TodoListAPI.Repositories
 
         public TaskRepository(IMongoDatabase database)
         {
-            _taskCollection = database.GetCollection<TaskItem>("tasks");
+            _taskCollection = database.GetCollection<TaskItem>("Tasks");
         }
 
         public List<TaskItem> GetTasks()
         {
-            return _taskCollection.Find(task => true).ToList();
+            return _taskCollection.Find(new BsonDocument()).ToList();
+        }
+
+        public List<TaskItem> GetTasksByStatus(string? status)
+        {
+            var filter = Builders<TaskItem>.Filter.Empty;
+
+            if (!string.IsNullOrEmpty(status))
+            {
+                filter = Builders<TaskItem>.Filter.Eq(t => t.Status, status);
+            }
+
+            return _taskCollection.Find(filter).ToList();
         }
 
         public TaskItem GetTaskById(ObjectId id)
         {
-            return _taskCollection.Find(task => task.Id == id).FirstOrDefault();
+            return _taskCollection.Find(t => t.Id == id).FirstOrDefault();
         }
 
         public void AddTask(TaskItem task)
@@ -31,15 +43,13 @@ namespace TodoListAPI.Repositories
 
         public void UpdateTask(ObjectId id, TaskItem updatedTask)
         {
-            updatedTask.Id = id;
-            _taskCollection.ReplaceOne(task => task.Id == id, updatedTask);
+            _taskCollection.ReplaceOne(t => t.Id == id, updatedTask);
         }
 
         public bool DeleteTask(ObjectId id)
         {
-            var result = _taskCollection.DeleteOne(task => task.Id == id);
+            var result = _taskCollection.DeleteOne(t => t.Id == id);
             return result.DeletedCount > 0;
         }
     }
-
 }

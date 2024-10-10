@@ -17,16 +17,16 @@ namespace TodoListAPI.Controllers
         }
 
         [HttpGet]
-        public ActionResult<object> GetTasks(int page = 1, int pageSize = 10)
+        public ActionResult<object> GetTasks(int page = 1, int pageSize = 10, string? status = null)
         {
-            var (tasks, totalCount) = _taskService.GetTasks(page, pageSize);
+            var (tasks, totalCount) = _taskService.GetTasks(page, pageSize, status);
             var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
 
             var response = tasks.Select(t => new
             {
                 Id = t.Id.ToString(),
                 t.Title,
-                t.IsCompleted
+                t.Status 
             });
 
             return Ok(new
@@ -57,7 +57,7 @@ namespace TodoListAPI.Controllers
             {
                 Id = task.Id.ToString(),
                 task.Title,
-                task.IsCompleted
+                task.Status
             };
 
             return Ok(response);
@@ -74,7 +74,7 @@ namespace TodoListAPI.Controllers
             var newTask = new TaskItem
             {
                 Title = newTaskDto.Title,
-                IsCompleted = newTaskDto.IsCompleted
+                Status = newTaskDto.Status
             };
 
             _taskService.AddTask(newTask);
@@ -83,7 +83,7 @@ namespace TodoListAPI.Controllers
             {
                 Id = newTask.Id.ToString(),
                 newTask.Title,
-                newTask.IsCompleted
+                newTask.Status
             };
 
             return CreatedAtAction(nameof(GetTaskById), new { id = newTask.Id.ToString() }, response);
@@ -101,7 +101,7 @@ namespace TodoListAPI.Controllers
             {
                 Id = objectId,
                 Title = updatedTaskDto.Title,
-                IsCompleted = updatedTaskDto.IsCompleted
+                Status = updatedTaskDto.Status
             };
 
             _taskService.UpdateTask(objectId, updatedTask);
@@ -110,7 +110,7 @@ namespace TodoListAPI.Controllers
             {
                 Id = updatedTask.Id.ToString(),
                 updatedTask.Title,
-                updatedTask.IsCompleted
+                updatedTask.Status
             });
         }
 
@@ -129,6 +129,13 @@ namespace TodoListAPI.Controllers
             }
 
             return NoContent();
+        }
+
+        [HttpGet("completion-percentage")]
+        public ActionResult<double> GetCompletionPercentage()
+        {
+            var percentage = _taskService.GetCompletionPercentage();
+            return Ok(percentage);
         }
     }
 }

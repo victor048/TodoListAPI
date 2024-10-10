@@ -1,24 +1,35 @@
 ﻿using MongoDB.Bson;
-using MongoDB.Driver;
 using TodoListAPI.Models;
 using TodoListAPI.Repositories.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace TodoListAPI.Services
 {
     public class TaskService : ITaskService
     {
         private readonly ITaskRepository _taskRepository;
-        private readonly IMongoCollection<TaskItem> _taskCollection;
 
-        public TaskService(ITaskRepository taskRepository, IMongoDatabase database)
+        public TaskService(ITaskRepository taskRepository)
         {
             _taskRepository = taskRepository;
-            _taskCollection = database.GetCollection<TaskItem>("tasks");
         }
 
-        public List<TaskItem> GetTasks()
+        public (List<TaskItem> tasks, int totalCount) GetTasks(int page, int pageSize, string? status)
         {
-            return _taskRepository.GetTasks();
+            var query = _taskRepository.GetTasks();
+
+            if (!string.IsNullOrEmpty(status))
+            {
+                query = query.Where(t => t.Status.Equals(status, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+
+            var totalCount = query.Count();
+
+            var tasks = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            return (tasks, totalCount);
         }
 
         public TaskItem GetTaskById(ObjectId id)
@@ -28,16 +39,22 @@ namespace TodoListAPI.Services
 
         public void AddTask(TaskItem task)
         {
-            if (string.IsNullOrWhiteSpace(task.Title))
+            if (string.IsNullOrEmpty(task.Title))
             {
                 throw new ArgumentException("Title cannot be empty");
             }
 
+            task.Status = task.Status ?? "Iniciada";
+
             _taskRepository.AddTask(task);
         }
 
+
         public void UpdateTask(ObjectId id, TaskItem updatedTask)
         {
+            if (string.IsNullOrWhiteSpace(updatedTask.Title))
+                throw new ArgumentException("Title cannot be empty");
+
             _taskRepository.UpdateTask(id, updatedTask);
         }
 
@@ -46,16 +63,23 @@ namespace TodoListAPI.Services
             return _taskRepository.DeleteTask(id);
         }
 
-        public (IEnumerable<TaskItem> Tasks, int TotalCount) GetTasks(int page, int pageSize)
+        public IEnumerable<TaskItem> GetTasksByStatus(string? status)
         {
-            var totalCount = _taskCollection.CountDocuments(new BsonDocument());
-            var tasks = _taskCollection.Find(new BsonDocument())
-                .Skip((page - 1) * pageSize)
-                .Limit(pageSize)
-                .ToList();
+            if (string.IsNullOrEmpty(status))
+            {
+                return _taskRepository.GetTasks();
+            }
 
-            return (tasks, (int)totalCount);
+            return _taskRepository.GetTasksByStatus(status);
+        }
+        public double GetCompletionPercentage()
+        {
+            var tasks = _taskRepository.GetTasks();
+            if (tasks.Count == 0)
+                return 0;
+
+            var completedTasks = tasks.Count(t => t.Status == "Completed");
+            return (double)completedTasks / tasks.Count * 100;
         }
     }
-
 }

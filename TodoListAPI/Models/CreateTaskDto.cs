@@ -6,6 +6,6 @@ namespace TodoListAPI.Models
     {
         [Required]
         public string Title { get; set; } = string.Empty;
-        public bool IsCompleted { get; set; } = false;
+        public string Status { get; set; }
     }
 }

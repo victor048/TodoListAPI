@@ -1,61 +1,33 @@
 using MongoDB.Bson;
-using MongoDB.Driver;
 using Moq;
 using TodoListAPI.Models;
 using TodoListAPI.Repositories.Interfaces;
 using TodoListAPI.Services;
 
-namespace ToDoListAPI.Tests
+namespace TodoListAPI.Tests
 {
     public class TaskServiceTests
     {
         private readonly TaskService _taskService;
         private readonly Mock<ITaskRepository> _taskRepositoryMock;
-        private readonly Mock<IMongoDatabase> _mongoDatabaseMock;
 
         public TaskServiceTests()
         {
             _taskRepositoryMock = new Mock<ITaskRepository>();
-            _mongoDatabaseMock = new Mock<IMongoDatabase>();
-            _taskService = new TaskService(_taskRepositoryMock.Object, _mongoDatabaseMock.Object);
-        }
-
-        // Teste para verificar se o método GetTasks retorna uma lista de tarefas
-        [Fact]
-        public void GetTasks_ShouldReturnTasks()
-        {
-            // Arrange
-            var tasks = new List<TaskItem>
-            {
-                new TaskItem { Id = ObjectId.GenerateNewId(), Title = "Task 1", IsCompleted = false },
-                new TaskItem { Id = ObjectId.GenerateNewId(), Title = "Task 2", IsCompleted = true }
-            };
-
-            _taskRepositoryMock.Setup(repo => repo.GetTasks()).Returns(tasks);
-
-            // Act
-            var result = _taskService.GetTasks();
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.NotEmpty(result);
-            Assert.Equal(2, result.Count);
+            _taskService = new TaskService(_taskRepositoryMock.Object);
         }
 
         // Teste para obter uma tarefa por ID existente
         [Fact]
         public void GetTaskById_ShouldReturnTask_WhenTaskExists()
         {
-            // Arrange
             var taskId = ObjectId.GenerateNewId();
-            var task = new TaskItem { Id = taskId, Title = "Task 1", IsCompleted = false };
+            var task = new TaskItem { Id = taskId, Title = "Task 1", Status = "Pending" };
 
             _taskRepositoryMock.Setup(repo => repo.GetTaskById(taskId)).Returns(task);
 
-            // Act
             var result = _taskService.GetTaskById(taskId);
 
-            // Assert
             Assert.NotNull(result);
             Assert.Equal(taskId.ToString(), result.Id.ToString());
         }
@@ -64,15 +36,13 @@ namespace ToDoListAPI.Tests
         [Fact]
         public void GetTaskById_ShouldReturnNull_WhenTaskDoesNotExist()
         {
-            // Arrange
+            
             var taskId = ObjectId.GenerateNewId();
 
             _taskRepositoryMock.Setup(repo => repo.GetTaskById(taskId)).Returns((TaskItem)null);
 
-            // Act
             var result = _taskService.GetTaskById(taskId);
 
-            // Assert
             Assert.Null(result);
         }
 
@@ -81,12 +51,11 @@ namespace ToDoListAPI.Tests
         public void AddTask_ShouldAddNewTask()
         {
             // Arrange
-            var newTask = new TaskItem { Title = "New Task", IsCompleted = false };
+            var newTask = new TaskItem { Title = "New Task", Status = "Pending" };
 
-            // Act
+            
             _taskService.AddTask(newTask);
 
-            // Assert
             _taskRepositoryMock.Verify(repo => repo.AddTask(It.IsAny<TaskItem>()), Times.Once);
         }
 
@@ -94,10 +63,8 @@ namespace ToDoListAPI.Tests
         [Fact]
         public void AddTask_ShouldThrowException_WhenTitleIsEmpty()
         {
-            // Arrange
-            var newTask = new TaskItem { Title = "", IsCompleted = false };
+            var newTask = new TaskItem { Title = "", Status = "Pending" };
 
-            // Act & Assert
             var exception = Assert.Throws<ArgumentException>(() => _taskService.AddTask(newTask));
             Assert.Equal("Title cannot be empty", exception.Message);
         }
@@ -106,14 +73,11 @@ namespace ToDoListAPI.Tests
         [Fact]
         public void UpdateTask_ShouldUpdateExistingTask()
         {
-            // Arrange
             var taskId = ObjectId.GenerateNewId();
-            var updatedTask = new TaskItem { Id = taskId, Title = "Updated Task", IsCompleted = true };
+            var updatedTask = new TaskItem { Id = taskId, Title = "Updated Task", Status = "Completed" };
 
-            // Act
             _taskService.UpdateTask(taskId, updatedTask);
 
-            // Assert
             _taskRepositoryMock.Verify(repo => repo.UpdateTask(taskId, updatedTask), Times.Once);
         }
 
@@ -121,13 +85,11 @@ namespace ToDoListAPI.Tests
         [Fact]
         public void UpdateTask_ShouldThrowException_WhenTaskDoesNotExist()
         {
-            // Arrange
             var taskId = ObjectId.GenerateNewId();
-            var updatedTask = new TaskItem { Id = taskId, Title = "Non-existing Task", IsCompleted = true };
+            var updatedTask = new TaskItem { Id = taskId, Title = "Non-existing Task", Status = "Completed" };
 
             _taskRepositoryMock.Setup(repo => repo.UpdateTask(taskId, updatedTask)).Throws(new Exception("Task not found"));
 
-            // Act & Assert
             var exception = Assert.Throws<Exception>(() => _taskService.UpdateTask(taskId, updatedTask));
             Assert.Equal("Task not found", exception.Message);
         }
@@ -136,33 +98,69 @@ namespace ToDoListAPI.Tests
         [Fact]
         public void DeleteTask_ShouldRemoveTask()
         {
-            // Arrange
             var taskId = ObjectId.GenerateNewId();
 
             _taskRepositoryMock.Setup(repo => repo.DeleteTask(taskId)).Returns(true);
 
-            // Act
             var result = _taskService.DeleteTask(taskId);
 
-            // Assert
             Assert.True(result);
             _taskRepositoryMock.Verify(repo => repo.DeleteTask(taskId), Times.Once);
         }
 
+        // Teste para tentar excluir uma tarefa que não existe
         [Fact]
         public void DeleteTask_ShouldReturnFalse_WhenTaskDoesNotExist()
         {
-            // Arrange
             var taskId = ObjectId.GenerateNewId();
 
             _taskRepositoryMock.Setup(repo => repo.DeleteTask(taskId)).Returns(false);
 
-            // Act
             var result = _taskService.DeleteTask(taskId);
 
-            // Assert
             Assert.False(result);
             _taskRepositoryMock.Verify(repo => repo.DeleteTask(taskId), Times.Once);
+        }
+
+        // Teste para obter tarefas filtradas por status
+        [Fact]
+        public void GetTasksByStatus_ShouldReturnFilteredTasks()
+        {
+            var status = "Pending";
+            var tasks = new List<TaskItem>
+            {
+                new TaskItem { Id = ObjectId.GenerateNewId(), Title = "Task 1", Status = "Pending" },
+                new TaskItem { Id = ObjectId.GenerateNewId(), Title = "Task 2", Status = "Completed" }
+            };
+
+            _taskRepositoryMock.Setup(repo => repo.GetTasksByStatus(status)).Returns(new List<TaskItem> { tasks[0] });
+
+            var result = _taskService.GetTasksByStatus(status);
+
+            Assert.NotNull(result);
+            Assert.Single(result);
+            Assert.Equal("Task 1", result.First().Title);
+        }
+
+        // Teste para obter tarefas quando o status é nulo
+        [Fact]
+        public void GetTasksByStatus_ShouldReturnAllTasks_WhenStatusIsNull()
+        {
+            
+            var tasks = new List<TaskItem>
+    {
+        new TaskItem { Id = ObjectId.GenerateNewId(), Title = "Task 1", Status = "Pending" },
+        new TaskItem { Id = ObjectId.GenerateNewId(), Title = "Task 2", Status = "Completed" }
+    };
+
+            _taskRepositoryMock.Setup(repo => repo.GetTasks()).Returns(tasks);
+
+            // Act
+            var result = _taskService.GetTasksByStatus(null);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(2, result.Count());
         }
     }
 }
