@@ -8,6 +8,7 @@ using TodoListAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
 // CORS configuration
 builder.Services.AddCors(options =>
 {
@@ -35,14 +36,6 @@ builder.Services.AddScoped<IMongoDatabase>(sp =>
     return client.GetDatabase(settings.DatabaseName);
 });
 
-builder.WebHost.ConfigureKestrel(serverOptions =>
-{
-    serverOptions.ListenAnyIP(7168, listenOptions =>
-    {
-        listenOptions.UseHttps(); // Configure HTTPS
-    });
-});
-
 // Add services to the container
 builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
@@ -62,7 +55,7 @@ app.UseSwaggerUI(c =>
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "TodoListAPI V1");
 });
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseRouting();
 app.UseCors("AllowAll");
 app.UseAuthorization();
