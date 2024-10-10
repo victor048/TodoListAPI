@@ -132,10 +132,15 @@ namespace TodoListAPI.Controllers
         }
 
         [HttpGet("completion-percentage")]
-        public ActionResult<double> GetCompletionPercentage()
+        public ActionResult GetCompletionPercentage()
         {
-            var percentage = _taskService.GetCompletionPercentage();
-            return Ok(percentage);
+            var (concluido, emAndamento, deletado) = _taskService.GetTaskPercentages();
+            return Ok(new
+            {
+                Concluido = concluido,
+                EmAndamento = emAndamento,
+                Deletado = deletado
+            });
         }
     }
 }

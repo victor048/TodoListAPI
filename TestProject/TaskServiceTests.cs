@@ -162,5 +162,28 @@ namespace TodoListAPI.Tests
             Assert.NotNull(result);
             Assert.Equal(2, result.Count());
         }
+
+        // Teste para verificar porcentagem quando todas as tarefas estão concluídas
+        [Fact]
+        public void GetTaskPercentages_ShouldReturn100PercentCompleted_WhenAllTasksCompleted()
+        {
+            // Arrange
+            var tasks = new List<TaskItem>
+        {
+            new TaskItem { Status = "Concluido" },
+            new TaskItem { Status = "Concluido" },
+            new TaskItem { Status = "Concluido" }
+        };
+
+            _taskRepositoryMock.Setup(repo => repo.GetTasks()).Returns(tasks);
+
+            // Act
+            var (completedPercentage, inProgressPercentage, deletedPercentage) = _taskService.GetTaskPercentages();
+
+            // Assert
+            Assert.Equal(100, completedPercentage);   // 100% concluídas
+            Assert.Equal(0, inProgressPercentage);    // 0% em andamento
+            Assert.Equal(0, deletedPercentage);       // 0% deletadas
+        }
     }
 }

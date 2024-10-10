@@ -18,6 +18,6 @@ namespace TodoListAPI.Repositories.Interfaces
 
         IEnumerable<TaskItem> GetTasksByStatus(string status);
 
-        double GetCompletionPercentage();
+        (double completedPercentage, double inProgressPercentage, double deletedPercentage) GetTaskPercentages();
     }
 }

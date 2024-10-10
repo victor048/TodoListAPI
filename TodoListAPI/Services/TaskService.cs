@@ -72,14 +72,25 @@ namespace TodoListAPI.Services
 
             return _taskRepository.GetTasksByStatus(status);
         }
-        public double GetCompletionPercentage()
+        public (double completedPercentage, double inProgressPercentage, double deletedPercentage) GetTaskPercentages()
         {
             var tasks = _taskRepository.GetTasks();
-            if (tasks.Count == 0)
-                return 0;
+            if (tasks == null || !tasks.Any())
+            {
+                return (0, 0, 0);
+            }
 
-            var completedTasks = tasks.Count(t => t.Status == "Completed");
-            return (double)completedTasks / tasks.Count * 100;
+            var totalTasks = tasks.Count();
+            var completedTasks = tasks.Count(t => t.Status == "Concluido");
+            var inProgressTasks = tasks.Count(t => t.Status == "Em Andamento");
+            var deletedTasks = tasks.Count(t => t.Status == "Deletado");
+
+            var completedPercentage = (double)completedTasks / totalTasks * 100;
+            var inProgressPercentage = (double)inProgressTasks / totalTasks * 100;
+            var deletedPercentage = (double)deletedTasks / totalTasks * 100;
+
+            return (completedPercentage, inProgressPercentage, deletedPercentage);
         }
+
     }
 }
