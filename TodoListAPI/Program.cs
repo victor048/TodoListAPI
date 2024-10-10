@@ -8,6 +8,7 @@ using TodoListAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// CORS configuration
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -16,6 +17,7 @@ builder.Services.AddCors(options =>
               .AllowAnyHeader());
 });
 
+// MongoDB configuration
 builder.Services.Configure<MongoDbSettings>(builder.Configuration.GetSection("MongoDbSettings"));
 
 builder.Services.AddSingleton<IMongoClient>(sp =>
@@ -33,33 +35,28 @@ builder.Services.AddScoped<IMongoDatabase>(sp =>
     return client.GetDatabase(settings.DatabaseName);
 });
 
-// Add services to the container.
+// Add services to the container
 builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 builder.Services.AddScoped<MongoDbData>();
-
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+// Swagger configuration
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// Configure the HTTP request pipeline
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "TodoListAPI V1");
-    });
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "TodoListAPI V1");
+});
 
 app.UseHttpsRedirection();
-
+app.UseCors("AllowAll");
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();
