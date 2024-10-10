@@ -17,16 +17,16 @@ namespace TodoListAPI.Controllers
         }
 
         [HttpGet]
-        public ActionResult<object> GetTasks(int page = 1, int pageSize = 10, string? status = null)
+        public async Task<ActionResult<object>> GetTasks(int page = 1, int pageSize = 10, string? status = null)
         {
-            var (tasks, totalCount) = _taskService.GetTasks(page, pageSize, status);
+            var (tasks, totalCount) = await _taskService.GetTasksAsync(page, pageSize, status);
             var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
 
             var response = tasks.Select(t => new
             {
                 Id = t.Id.ToString(),
                 t.Title,
-                t.Status 
+                t.Status
             });
 
             return Ok(new
@@ -40,14 +40,14 @@ namespace TodoListAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<object> GetTaskById(string id)
+        public async Task<ActionResult<object>> GetTaskById(string id)
         {
             if (!ObjectId.TryParse(id, out var objectId))
             {
                 return BadRequest("Invalid ID format.");
             }
 
-            var task = _taskService.GetTaskById(objectId);
+            var task = await _taskService.GetTaskByIdAsync(objectId);
             if (task == null)
             {
                 return NotFound();
@@ -64,7 +64,7 @@ namespace TodoListAPI.Controllers
         }
 
         [HttpPost]
-        public ActionResult<object> AddTask([FromBody] CreateTaskDto newTaskDto)
+        public async Task<ActionResult<object>> AddTask([FromBody] CreateTaskDto newTaskDto)
         {
             if (string.IsNullOrWhiteSpace(newTaskDto.Title))
             {
@@ -77,7 +77,7 @@ namespace TodoListAPI.Controllers
                 Status = newTaskDto.Status
             };
 
-            _taskService.AddTask(newTask);
+            await _taskService.AddTaskAsync(newTask);
 
             var response = new
             {
@@ -90,7 +90,7 @@ namespace TodoListAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public ActionResult<object> UpdateTask(string id, [FromBody] CreateTaskDto updatedTaskDto)
+        public async Task<ActionResult<object>> UpdateTask(string id, [FromBody] CreateTaskDto updatedTaskDto)
         {
             if (!ObjectId.TryParse(id, out var objectId))
             {
@@ -104,7 +104,7 @@ namespace TodoListAPI.Controllers
                 Status = updatedTaskDto.Status
             };
 
-            _taskService.UpdateTask(objectId, updatedTask);
+            await _taskService.UpdateTaskAsync(objectId, updatedTask);
 
             return Ok(new
             {
@@ -115,14 +115,14 @@ namespace TodoListAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        public ActionResult DeleteTask(string id)
+        public async Task<ActionResult> DeleteTask(string id)
         {
             if (!ObjectId.TryParse(id, out var objectId))
             {
                 return BadRequest("Invalid ID format.");
             }
 
-            var deleted = _taskService.DeleteTask(objectId);
+            var deleted = await _taskService.DeleteTaskAsync(objectId);
             if (!deleted)
             {
                 return NotFound();
@@ -132,9 +132,9 @@ namespace TodoListAPI.Controllers
         }
 
         [HttpGet("completion-percentage")]
-        public ActionResult GetCompletionPercentage()
+        public async Task<ActionResult> GetCompletionPercentage()
         {
-            var (concluido, emAndamento, deletado) = _taskService.GetTaskPercentages();
+            var (concluido, emAndamento, deletado) = await _taskService.GetTaskPercentagesAsync();
             return Ok(new
             {
                 Concluido = concluido,

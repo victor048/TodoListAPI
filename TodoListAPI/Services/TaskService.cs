@@ -1,9 +1,6 @@
 ﻿using MongoDB.Bson;
 using TodoListAPI.Models;
 using TodoListAPI.Repositories.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace TodoListAPI.Services
 {
@@ -16,65 +13,66 @@ namespace TodoListAPI.Services
             _taskRepository = taskRepository;
         }
 
-        public (List<TaskItem> tasks, int totalCount) GetTasks(int page, int pageSize, string? status)
+        public async Task<(List<TaskItem> tasks, int totalCount)> GetTasksAsync(int page, int pageSize, string? status)
         {
-            var query = _taskRepository.GetTasks();
+            var tasks = await _taskRepository.GetTasksAsync();
 
             if (!string.IsNullOrEmpty(status))
             {
-                query = query.Where(t => t.Status.Equals(status, StringComparison.OrdinalIgnoreCase)).ToList();
+                tasks = tasks.Where(t => t.Status.Equals(status, StringComparison.OrdinalIgnoreCase)).ToList();
             }
 
-            var totalCount = query.Count();
+            var totalCount = tasks.Count();
+            var pagedTasks = tasks.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
-            var tasks = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-
-            return (tasks, totalCount);
+            return (pagedTasks, totalCount);
         }
 
-        public TaskItem GetTaskById(ObjectId id)
+        public async Task<TaskItem> GetTaskByIdAsync(ObjectId id)
         {
-            return _taskRepository.GetTaskById(id);
+            return await _taskRepository.GetTaskByIdAsync(id);
         }
 
-        public void AddTask(TaskItem task)
+        public async Task AddTaskAsync(TaskItem task)
         {
             if (string.IsNullOrEmpty(task.Title))
             {
                 throw new ArgumentException("Title cannot be empty");
             }
 
-            task.Status = task.Status ?? "Iniciada";
+            task.Status ??= "Iniciada"; // Atribui "Iniciada" se Status for null
 
-            _taskRepository.AddTask(task);
+            await _taskRepository.AddTaskAsync(task);
         }
 
-
-        public void UpdateTask(ObjectId id, TaskItem updatedTask)
+        public async Task UpdateTaskAsync(ObjectId id, TaskItem updatedTask)
         {
             if (string.IsNullOrWhiteSpace(updatedTask.Title))
+            {
                 throw new ArgumentException("Title cannot be empty");
+            }
 
-            _taskRepository.UpdateTask(id, updatedTask);
+            await _taskRepository.UpdateTaskAsync(id, updatedTask);
         }
 
-        public bool DeleteTask(ObjectId id)
+        public async Task<bool> DeleteTaskAsync(ObjectId id)
         {
-            return _taskRepository.DeleteTask(id);
+            return await _taskRepository.DeleteTaskAsync(id);
         }
 
-        public IEnumerable<TaskItem> GetTasksByStatus(string? status)
+        public async Task<List<TaskItem>> GetTasksByStatusAsync(string status)
         {
             if (string.IsNullOrEmpty(status))
             {
-                return _taskRepository.GetTasks();
+                return await _taskRepository.GetTasksAsync();
             }
 
-            return _taskRepository.GetTasksByStatus(status);
+            return await _taskRepository.GetTasksByStatusAsync(status);
         }
-        public (double completedPercentage, double inProgressPercentage, double deletedPercentage) GetTaskPercentages()
+
+        public async Task<(double completedPercentage, double inProgressPercentage, double deletedPercentage)> GetTaskPercentagesAsync()
         {
-            var tasks = _taskRepository.GetTasks();
+            var tasks = await _taskRepository.GetTasksAsync();
             if (tasks == null || !tasks.Any())
             {
                 return (0, 0, 0);
@@ -91,6 +89,5 @@ namespace TodoListAPI.Services
 
             return (completedPercentage, inProgressPercentage, deletedPercentage);
         }
-
     }
 }

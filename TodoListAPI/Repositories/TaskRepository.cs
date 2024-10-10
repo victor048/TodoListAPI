@@ -14,12 +14,12 @@ namespace TodoListAPI.Repositories
             _taskCollection = database.GetCollection<TaskItem>("Tasks");
         }
 
-        public List<TaskItem> GetTasks()
+        public async Task<List<TaskItem>> GetTasksAsync()
         {
-            return _taskCollection.Find(new BsonDocument()).ToList();
+            return await _taskCollection.Find(new BsonDocument()).ToListAsync();
         }
 
-        public List<TaskItem> GetTasksByStatus(string? status)
+        public async Task<List<TaskItem>> GetTasksByStatusAsync(string? status)
         {
             var filter = Builders<TaskItem>.Filter.Empty;
 
@@ -28,27 +28,27 @@ namespace TodoListAPI.Repositories
                 filter = Builders<TaskItem>.Filter.Eq(t => t.Status, status);
             }
 
-            return _taskCollection.Find(filter).ToList();
+            return await _taskCollection.Find(filter).ToListAsync();
         }
 
-        public TaskItem GetTaskById(ObjectId id)
+        public async Task<TaskItem> GetTaskByIdAsync(ObjectId id)
         {
-            return _taskCollection.Find(t => t.Id == id).FirstOrDefault();
+            return await _taskCollection.Find(t => t.Id == id).FirstOrDefaultAsync();
         }
 
-        public void AddTask(TaskItem task)
+        public async Task AddTaskAsync(TaskItem task)
         {
-            _taskCollection.InsertOne(task);
+            await _taskCollection.InsertOneAsync(task);
         }
 
-        public void UpdateTask(ObjectId id, TaskItem updatedTask)
+        public async Task UpdateTaskAsync(ObjectId id, TaskItem updatedTask)
         {
-            _taskCollection.ReplaceOne(t => t.Id == id, updatedTask);
+            await _taskCollection.ReplaceOneAsync(t => t.Id == id, updatedTask);
         }
 
-        public bool DeleteTask(ObjectId id)
+        public async Task<bool> DeleteTaskAsync(ObjectId id)
         {
-            var result = _taskCollection.DeleteOne(t => t.Id == id);
+            var result = await _taskCollection.DeleteOneAsync(t => t.Id == id);
             return result.DeletedCount > 0;
         }
     }

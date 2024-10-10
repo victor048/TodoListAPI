@@ -1,23 +1,20 @@
 ﻿using MongoDB.Bson;
 using TodoListAPI.Models;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace TodoListAPI.Repositories.Interfaces
 {
     public interface ITaskService
     {
-        (List<TaskItem> tasks, int totalCount) GetTasks(int page, int pageSize, string? status); 
+        Task<(List<TaskItem> tasks, int totalCount)> GetTasksAsync(int page, int pageSize, string? status);
+        Task<TaskItem> GetTaskByIdAsync(ObjectId id);
+        Task AddTaskAsync(TaskItem task);
+        Task UpdateTaskAsync(ObjectId id, TaskItem updatedTask);
+        Task<bool> DeleteTaskAsync(ObjectId id);
+        Task<List<TaskItem>> GetTasksByStatusAsync(string status);
 
-        TaskItem GetTaskById(ObjectId id);
 
-        void AddTask(TaskItem task);
-
-        void UpdateTask(ObjectId id, TaskItem updatedTask);
-
-        bool DeleteTask(ObjectId id);
-
-        IEnumerable<TaskItem> GetTasksByStatus(string status);
-
-        (double completedPercentage, double inProgressPercentage, double deletedPercentage) GetTaskPercentages();
+        Task<(double completedPercentage, double inProgressPercentage, double deletedPercentage)> GetTaskPercentagesAsync();
     }
 }
