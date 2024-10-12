@@ -53,10 +53,19 @@ app.UseCors("AllowAllOrigins");
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "TodoList API V1");
+        c.RoutePrefix = string.Empty;
+    });
 }
 
+// Configuração de roteamento e autorização
 app.UseRouting();
 app.UseAuthorization();
+
+// Mapear os controladores
 app.MapControllers();
+
+// Executar o aplicativo
 app.Run();
