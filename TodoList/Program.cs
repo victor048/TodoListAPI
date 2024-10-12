@@ -50,14 +50,8 @@ var app = builder.Build();
 app.UseCors("AllowAllOrigins");
 
 // Habilitar Swagger
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "TodoList API V1");
-    });
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 // Configuração de roteamento e autorização
 app.UseRouting();
