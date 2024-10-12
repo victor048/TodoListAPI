@@ -49,14 +49,13 @@ var app = builder.Build();
 // Aplicar CORS
 app.UseCors("AllowAllOrigins");
 
-// Configurar o pipeline de requisições HTTP
+// Habilitar Swagger
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "TodoList API V1");
-        c.RoutePrefix = string.Empty;
     });
 }
 
