@@ -28,6 +28,15 @@ builder.Services.AddScoped<IMongoDatabase>(sp =>
 // Registrar o serviço TaskService
 builder.Services.AddScoped<ITaskService, TaskService>();
 
+// Configurar CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        builder => builder.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader());
+});
+
 // Adicionar serviços ao contêiner
 builder.Services.AddControllers();
 
@@ -36,6 +45,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+// Aplicar CORS
+app.UseCors("AllowAllOrigins");
 
 // Configurar o pipeline de requisições HTTP
 if (app.Environment.IsDevelopment())
