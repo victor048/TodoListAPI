@@ -1031,11 +1031,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Victor L. Rodrigues\\Source\\Repos\\TodoListAPI\\TodoList\\TodoList\\TodoList.csproj",
+      "projectUniqueName": "C:\\Users\\Victor L. Rodrigues\\source\\repos\\TodoListAPI\\TodoList\\TodoList.csproj",
       "projectName": "TodoList",
-      "projectPath": "C:\\Users\\Victor L. Rodrigues\\Source\\Repos\\TodoListAPI\\TodoList\\TodoList\\TodoList.csproj",
+      "projectPath": "C:\\Users\\Victor L. Rodrigues\\source\\repos\\TodoListAPI\\TodoList\\TodoList.csproj",
       "packagesPath": "C:\\Users\\Victor L. Rodrigues\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Victor L. Rodrigues\\Source\\Repos\\TodoListAPI\\TodoList\\TodoList\\obj\\",
+      "outputPath": "C:\\Users\\Victor L. Rodrigues\\source\\repos\\TodoListAPI\\TodoList\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

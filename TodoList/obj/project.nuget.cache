@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "p5Ry/dsfYVJyYqFZWmAan74Q5wwMyVhBA8k+eFhruRVPeabmnJj3pMbFOZlv7HL8BxyJsOqLOy5HW0clY+sBgw==",
+  "dgSpecHash": "XcXsGRsCiw9IGdaev2gwlLtu6IOm5P2uLZDc5QsqU9Z3WXd1HbRTFJaj9ZYAvsNagk9j8N9184VZwAGF5wxpug==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Victor L. Rodrigues\\Source\\Repos\\TodoListAPI\\TodoList\\TodoList\\TodoList.csproj",
+  "projectFilePath": "C:\\Users\\Victor L. Rodrigues\\source\\repos\\TodoListAPI\\TodoList\\TodoList.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Victor L. Rodrigues\\.nuget\\packages\\awssdk.core\\3.7.100.14\\awssdk.core.3.7.100.14.nupkg.sha512",
     "C:\\Users\\Victor L. Rodrigues\\.nuget\\packages\\awssdk.securitytoken\\3.7.100.14\\awssdk.securitytoken.3.7.100.14.nupkg.sha512",

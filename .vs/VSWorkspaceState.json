@@ -1,7 +1,9 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\TodoList",
+    "\\TodoList\\TodoList"
   ],
-  "SelectedNode": "\\TodoListAPI.sln",
+  "SelectedNode": "\\TodoList\\TodoList.csproj.user",
   "PreviewInSolutionExplorer": false
 }
