@@ -102,7 +102,6 @@ namespace TodoList.Controllers
             var completedPercentage = (double)completedTasks / totalTasks * 100;  
             var notCompletedPercentage = 100 - completedPercentage;  
 
-            // Retorna os dados em formato JSON
             var stats = new
             {
                 completedPercentage = completedPercentage,
